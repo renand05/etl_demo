@@ -1,0 +1,19 @@
+{
+	"name": "brightwheel",
+	"build": {
+		"context": "..",
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-docker",
+				"ms-python.python",
+				"alexcvzz.vscode-sqlite"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "~/.cache/pypoetry/virtualenvs"
+			}
+		}
+	}
+}
