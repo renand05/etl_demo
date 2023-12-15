@@ -15,5 +15,6 @@
 				"python.defaultInterpreterPath": "~/.cache/pypoetry/virtualenvs"
 			}
 		}
-	}
+	},
+	"postCreateCommand": "poetry install"
 }

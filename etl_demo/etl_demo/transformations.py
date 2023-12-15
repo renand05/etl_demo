@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from pyspark.sql.functions import col, coalesce, concat, lit, split, upper, when
+from pyspark.sql.functions import col, coalesce, concat, lit, split, regexp_replace, upper, when
 from pyspark.sql import dataframe 
 
 
@@ -37,7 +37,9 @@ class OklahomaDatasetTransformation(Transformation):
             .withColumn("first_name", upper(split(col("Primary Caregiver"), " ").getItem(0)))
             .withColumn("last_name", upper(split(col("Primary Caregiver"), " ").getItem(1)))
             .withColumn("language", lit("NULL"))
-
+            .withColumn("license_type", upper(split(col("Type License"), " - ").getItem(0)))
+            .withColumn("license_status", upper(col("State")))
+            .withColumn("license_issued", regexp_replace(col("License Monitoring Since"), "Monitoring since ", ""))
         )
 
         return output_dataframe
@@ -57,6 +59,23 @@ class TexasDatasetTransformation(Transformation):
                 ), lit("NULL"))
             )
             .withColumn("capacity", col("Capacity"))
+            .withColumn("certificate_expiration_date", lit("NULL"))
+            .withColumn("city", upper(coalesce(col("City"), lit("NULL"))))
+            .withColumn("address1", upper(coalesce(col("Address"))))
+            .withColumn("address2", lit("NULL"))
+            .withColumn("company", upper(coalesce(col("Operation/Caregiver Name"))))
+            .withColumn("phone1", upper(coalesce(col("Phone"))))
+            .withColumn("phone2", lit("NULL"))
+            .withColumn("county", col("County"))
+            .withColumn("curriculum_type", lit("NULL"))
+            .withColumn("email", col("Email Address"))
+            .withColumn("first_name", lit("NULL"))
+            .withColumn("last_name", lit("NULL"))
+            .withColumn("language", lit("NULL"))
+            .withColumn("license_type", upper(split(col("Type"), " - ").getItem(1)))
+            .withColumn("facility_type", upper(split(col("Type"), " - ").getItem(0)))
+            .withColumn("license_status", upper(col("Status")))
+            .withColumn("license_issued", col("Issue Date"))
         )
 
         return output_dataframe
