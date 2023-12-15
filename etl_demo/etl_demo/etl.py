@@ -4,6 +4,29 @@ from pyspark.sql import dataframe
 import typing
 
 
+OUTPUT_COLUMNS = [
+    "accepts_financial_aid",
+    "ages_served",
+    "capacity",
+    "certificate_expiration_date",
+    "city",
+    "address1",
+    "address2",
+    "company",
+    "phone1",
+    "phone2",
+    "county",
+    "curriculum_type",
+    "email",
+    "first_name",
+    "last_name",
+    "language",
+    "license_type",
+    "license_status",
+    "license_issued"
+]
+
+
 class DataFrameBuilder:
     def __init__(self, spark_session: SparkSession, input_paths: typing.List, transformations: typing.List[Transformation]):
         self.spark = spark_session
@@ -18,6 +41,7 @@ class DataFrameBuilder:
 
 
 def run_etl(df_builder: DataFrameBuilder, columns: typing.List) -> None:
+    results = []
     try:
         for item, dataframe in enumerate(df_builder.dataframes):
             filtered_source_dataframe = dataframe.select(columns[item])
@@ -25,7 +49,8 @@ def run_etl(df_builder: DataFrameBuilder, columns: typing.List) -> None:
                 df_builder
                 .build(source_dataframe=filtered_source_dataframe, transformation_index=item)
             )
-            result_dataframe.show()
+            results.append(result_dataframe.select(OUTPUT_COLUMNS))
+
     finally:
         spark.stop()
 
